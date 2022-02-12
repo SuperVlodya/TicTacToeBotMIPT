@@ -139,7 +139,10 @@ def player_move(message):
                 ---+---+---
                 ‎  {the_Board[1]} |  {the_Board[2]} | {the_Board[3]}
                 ''')
-        bot.send_message(message.from_user.id, "I win! If you want to play again, type /play\nTo review your stats, type /stats")
+        bot.send_message(message.from_user.id, '''
+            I win! If you want to play again, type /play
+            To review your stats, type /stats
+            ''')
     
     if  game_is_playing:
         bot.register_next_step_handler(message, player_move)

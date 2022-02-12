@@ -1,161 +1,90 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[52]:
-
-
 import random
 
-def drawBoard(board):
-    #Эта функция рисует игровую доску с выполненными ходами
-
-     #"Доска" является списком из 10 строк которые рисуют доску в 
-#символьной графике
-    print(' | |')
-    print(' ' + board[7] + ' | ' + board[8] + ' | ' + board[9])
-    print(' | |')
-    print('---+---+---')
-    print(' | |')
-    print(' ' + board[4] + ' | ' + board[5] + ' | ' + board[6])
-    print(' | |')
-    print('---+---+---')
-    print(' | |')
-    print(' ' + board[1] + ' | ' + board[2] + ' | ' + board[3])
-    print(' | |')
-
-def inputPlayerLetter():
-     #Позволяет игроку выбрать символ, которым он хочет играть
-     #Возвращает список с буквой игрока в качестве первого элемента и 
-#буквой компьютера в качестве второго элемента
-     letter = ''
-     while not (letter == 'Х' or letter == 'О'):
-        print('Каким знаком вы будете играть? (Х или О)')
-        letter = input().upper()
-
-     #Первым элементом возвращаемого списка всегда должен быть знак игрока.
-     if letter == 'Х':
-        return ['Х', 'О']
-     else:
-        return ['О', 'Х']
-
-def whoGoesFirst():
-     #Случайно определяется, кто будет ходить первым
-    if random.randint(0, 1) == 0:
-         return 'компьютер'
-    else:
-         return 'игрок'
-
-def playAgain():
-     #Эта функция возвращает True, если игрок хочет сыграть еще раз. 
-#Иначе False.
-     print('Вы хотите сыграть еще раз? (да или нет)')
-     return input().lower().startswith('д')
 
 def makeMove(board, letter, move):
      board[move] = letter
 
+        
 def isWinner(bo, le):
-     #Функция учитывает позицию на доске и текщий ход игрока. Возвращает 
-#True, если игрок выиграл
-     #Мы используем bo вместо доски и le вместо полных имен переменных
-     return ((bo[7] == le and bo[8] == le and bo[9] == le) or #Верхняя линия
-     (bo[4] == le and bo[5] == le and bo[6] == le) or #Средняя линия
-     (bo[1] == le and bo[2] == le and bo[3] == le) or #Нижняя линия
-     (bo[7] == le and bo[4] == le and bo[1] == le) or #Левая вертикальная линия
-     (bo[8] == le and bo[5] == le and bo[2] == le) or #Центральная вертикаль
-     (bo[9] == le and bo[6] == le and bo[3] == le) or #Верхняя линия
-     (bo[7] == le and bo[5] == le and bo[3] == le) or #Диагональ
-     (bo[9] == le and bo[5] == le and bo[1] == le)) #Диагональ
+     return ((bo[7] == bo[8] == bo[9] == le) or #Top line
+        (bo[4] == bo[5] == bo[6] == le) or #Middle line
+        (bo[1] == bo[2] == bo[3] == le) or #Bottom line
+        (bo[7] == bo[4] == bo[1] == le) or #Left vertical line
+        (bo[8] == bo[5] == bo[2] == le) or #Central vertical line
+        (bo[9] == bo[6] == bo[3] == le) or #Right vertical line
+        (bo[7] == bo[5] == bo[3] == le) or #3-7 Diagonal
+        (bo[9] == bo[5] == bo[1] == le))   #1-9 Diagonal
 
+    
 def getBoardCopy(board):
-     #Сделаем копию игровой доски и вернем её
-    dupeBoard = []
+     #Makes a copy of the board and returns it
+    dupe_Board = []
  
     for i in board:
-         dupeBoard.append(i)
+         dupe_Board.append(i)
 
-    return dupeBoard
+    return dupe_Board
  
+    
 def isSpaceFree(board, move):
-     #Возвращает True если ход возможен
+    #Returns True if the move is possive
     return board[move] == ' '
+
  
-def getPlayerMove(board):
-     #Позволяет игроку выполнить ход
-    move = ''
-    while move not in '1 2 3 4 5 6 7 8 9'.split() or not isSpaceFree(board, int(move)):
-         print('Ваш ход (1-9):')
-         move = input()
-    return int(move)
- 
-def chooseRandomMoveFromList(board, movesList):
-     #Возвращает случайный ход из полученного списка возможных ходов
-     #Возвращает None если ходов нет
-    possibleMoves = []
-    for i in movesList:
+def chooseRandomMoveFromList(board, moves_List):
+     #Returns a random possible move
+     #Returns None if no move is possible
+    possible_Moves = []
+    for i in moves_List:
         if isSpaceFree(board, i):
-            possibleMoves.append(i)
+            possible_Moves.append(i)
  
-    if len(possibleMoves) != 0:
-        return random.choice(possibleMoves)
+    if len(possible_Moves) != 0:
+        return random.choice(possible_Moves)
     else:
         return None
 
-def getComputerMove(board, computerLetter):
-     #Получает копию содержимого доски и букву, которой ходит компьютер. 
-#Исходя из этого определяет куда двигаться и возвращает ход
-    if computerLetter == 'Х':
-         playerLetter = 'О'
+    
+def getComputerMove(board, computer_Letter):
+    if computer_Letter == 'Х':
+         player_Letter = 'О'
     else:
-        playerLetter = 'Х'
+        player_Letter = 'Х'
  
-    #Здесь начинается алгоритм ИИ "Крестики-Нолики"
-    #Первым шагом будет определение возможности победы на следующем ходу
+    #Here starts AI for playing Tic-Tac-Toe
+    #Checks if bot can win by the next move
     for i in range(1, 10):
         copy = getBoardCopy(board)
         if isSpaceFree(copy, i):
-            makeMove(copy, computerLetter, i)
-            if isWinner(copy, computerLetter):
+            makeMove(copy, computer_Letter, i)
+            if isWinner(copy, computer_Letter):
                 return i
 
-    #Проверяем, может ли игрок выиграть на следющем ходу, чтобы 
-#заблокировать его
+    #Checks if player can win by the next move
     for i in range(1, 10):
         copy = getBoardCopy(board)
         if isSpaceFree(copy, i):
-            makeMove(copy, playerLetter, i)
-            if isWinner(copy, playerLetter):
+            makeMove(copy, player_Letter, i)
+            if isWinner(copy, player_Letter):
                 return i
  
-     #Попытаемся занять один из углов, если они свободны
+    #Trying to occupy one of the corners
     move = chooseRandomMoveFromList(board, [1, 3, 7, 9])
     if move != None:
         return move
  
-     #Занимаем центр, если он свободен
+    #Trying to occupy the center
     if isSpaceFree(board, 5):
         return 5
  
-     #Занимаем одну из боковых клеток
+    #Occupying what is left
     return chooseRandomMoveFromList(board, [2, 4, 6, 8])
 
+
 def isBoardFull(board):
-     #Возвращаем True, если все клетки на доске были заняты. Иначе 
-#возвращаем False
+    #Returns True if the board is full
+    #Returns False otherwise
     for i in range(1, 10):
          if isSpaceFree(board, i):
             return False
     return True
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

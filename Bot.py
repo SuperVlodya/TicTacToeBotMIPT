@@ -106,7 +106,10 @@ def player_move(message):
             ---+---+---
             ‎  {the_Board[1]} |  {the_Board[2]} | {the_Board[3]}
             ''')
-        bot.send_message(message.from_user.id, "Congrats, you win! If you want to play again, type /play\nTo review your stats, type /stats")
+        bot.send_message(message.from_user.id, '''
+            Congrats, you win! If you want to play again, type /play
+            To review your stats, type /stats
+            ''')
     else:
         if TicTacToe.isBoardFull(the_Board):
             ORM.update_stats(0, nick)

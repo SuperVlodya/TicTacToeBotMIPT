@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[82]:
-
-
 import peewee
 from peewee import *
+
 
 db = SqliteDatabase('TicTacToeDatabase.db')
 
@@ -21,11 +16,13 @@ class Stat(Model):
         order_by = 'name'
         db_table = 'stats'
 
+        
 def write_player(nick):    
     with db:
         player = {'name':nick, 'games_played':0, 'games_won':0, 'games_drawn':0, 'games_lost':0}
         Stat.insert(player).execute()
-        
+     
+    
 def check_name(nick):
     with db:
         unique_name = True
@@ -36,11 +33,13 @@ def check_name(nick):
                 break
         return unique_name
         
+        
 def get_stats(nick):
     with db:
         player_stats = Stat.get(Stat.name == nick)
         return [player_stats.name, player_stats.games_played, player_stats.games_won, player_stats.games_drawn, player_stats.games_lost]
 
+    
 def update_stats(result, nick):
     with db:
         player_stats = get_stats(nick)
@@ -60,10 +59,3 @@ def update_stats(result, nick):
             player_stats[4]+=1.0
         query=Stat.update({Stat.games_played:player_stats[1], Stat.games_won:player_stats[2], Stat.games_drawn:player_stats[3], Stat.games_lost:player_stats[4]}).where(Stat.name == nick)
         query.execute()
-
-
-# In[ ]:
-
-
-
-

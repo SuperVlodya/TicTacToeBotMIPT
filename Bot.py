@@ -52,7 +52,7 @@ def start_game(message):
                 ---+---+---
                 ‎  {the_Board[1]} |  {the_Board[2]} | {the_Board[3]}
                 ''')
-        bot.send_message(message.from_user.id, f'''
+        bot.send_message(message.from_user.id, '''
             Choose your move
             /topleft   /top   /topright
             /left   /center   /right

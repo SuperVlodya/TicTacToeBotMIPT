@@ -98,7 +98,7 @@ def player_move(message):
 
     if TicTacToe.isWinner(the_Board, player_Letter):
         game_is_playing = False
-        ORM.pdate_stats(1, nick)
+        ORM.update_stats(1, nick)
         bot.send_message(message.from_user.id, f'''
             ‎  {the_Board[7]} |  {the_Board[8]} | {the_Board[9]}
             ---+---+---
